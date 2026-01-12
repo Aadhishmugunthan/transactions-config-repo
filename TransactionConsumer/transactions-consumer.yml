@@ -1,1 +1,215 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/XEPDB1
+    username: system
+    password: SYSTEM
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      maximum-pool-size: 5
+      connection-test-query: SELECT 1 FROM DUAL
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,health,info
+
+# ==========================================================
+# TRANSACTION MAPPINGS (EXTERNALIZED)
+# ==========================================================
+txn:
+  mappings:
+
+    # ================= SEND_TRANSACTIONS =================
+    transaction:
+      TRAN_ID:
+        source: json
+        path: $.transaction.tranId
+        required: true
+
+      TRAN_TYPE:
+        source: constant
+        value: PAYMENT
+        required: true
+
+      TRAN_AMT:
+        source: json
+        path: $.transaction.amount
+        required: true
+
+      TRAN_CURR:
+        source: json
+        path: $.transaction.currency
+        required: true
+
+      CUR_STAT:
+        source: constant
+        value: NEW
+        required: true
+
+      TRAN_CRTE_DT:
+        source: system
+        format: yyyy-MM-dd HH:mm:ss
+
+      CRTE_TS:
+        source: system
+        format: yyyy-MM-dd HH:mm:ss
+
+      CRTE_USER_NAM:
+        source: constant
+        value: SYSTEM
+
+    # ================= SEND_TRAN_DTL =================
+    transactionDetails:
+      PAYMT_REF:
+        source: json
+        path: $.details.paymentRef
+        required: true
+
+      MERCH_CAT_CD:
+        source: json
+        path: $.details.merchantCategory
+        required: false
+
+      FUND_SRC:
+        source: json
+        path: $.details.fundSource
+        required: false
+
+      TRAN_SETL_AMT:
+        source: json
+        path: $.details.settlementAmount
+        required: true
+
+      TRAN_CRTE_DT:
+        source: system
+        format: yyyy-MM-dd HH:mm:ss
+
+    # ================= SEND_TRAN_ADDR_DTL =================
+    addresses:
+
+      sender:
+        ID:
+          source: generated
+
+        ADDR_TYPE:
+          source: constant
+          value: SENDER
+
+        ST_LINE1:
+          source: json
+          path: $.sender.address.line1
+
+        ST_LINE2:
+          source: json
+          path: $.sender.address.line2
+
+        CITY:
+          source: json
+          path: $.sender.address.city
+
+        ST:
+          source: json
+          path: $.sender.address.state
+
+        CNTRY_NAM:
+          source: json
+          path: $.sender.address.country
+
+        POST_CD:
+          source: json
+          path: $.sender.address.postalCode
+
+        CRTE_TS:
+          source: system
+          format: yyyy-MM-dd HH:mm:ss
+
+      recipient:
+        ID:
+          source: generated
+
+        ADDR_TYPE:
+          source: constant
+          value: RECIPIENT
+
+        ST_LINE1:
+          source: json
+          path: $.recipient.address.line1
+
+        ST_LINE2:
+          source: json
+          path: $.recipient.address.line2
+
+        CITY:
+          source: json
+          path: $.recipient.address.city
+
+        ST:
+          source: json
+          path: $.recipient.address.state
+
+        CNTRY_NAM:
+          source: json
+          path: $.recipient.address.country
+
+        POST_CD:
+          source: json
+          path: $.recipient.address.postalCode
+
+        CRTE_TS:
+          source: system
+          format: yyyy-MM-dd HH:mm:ss
+
+    # ================= SEND_RECIP_DTL =================
+    recipient:
+      SEND_FIRST_NAM:
+        source: json
+        path: $.sender.firstName
+        required: true
+
+      SEND_LST_NAM:
+        source: json
+        path: $.sender.lastName
+        required: true
+
+      SEND_EMAIL:
+        source: json
+        path: $.sender.email
+        required: true
+        validation:
+          pattern: "^[A-Za-z0-9+_.-]+@(.+)$"
+
+      SEND_PHN:
+        source: json
+        path: $.sender.phone
+        required: false
+
+      SEND_CARD_EXPIR_DT:
+        source: json
+        path: $.sender.cardExpiry
+        maxLength: 10   # <-- avoids ORA-12899
+
+      RECIP_FIRST_NAM:
+        source: json
+        path: $.recipient.firstName
+        required: true
+
+      RECIP_LST_NAM:
+        source: json
+        path: $.recipient.lastName
+        required: true
+
+      RECIP_EMAIL:
+        source: json
+        path: $.recipient.email
+        required: true
+
+      RECIP_PHN:
+        source: json
+        path: $.recipient.phone
+        required: false
+
+      TRAN_CRTE_DT:
+        source: system
+        format: yyyy-MM-dd HH:mm:ss
 
