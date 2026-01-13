@@ -1,22 +1,4 @@
-spring:
-  datasource:
-    url: jdbc:oracle:thin:@//localhost:1521/XEPDB1
-    username: system
-    password: SYSTEM
-    driver-class-name: oracle.jdbc.OracleDriver
-    hikari:
-      maximum-pool-size: 5
-      connection-test-query: SELECT 1 FROM DUAL
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh,health,info
-
-# ==========================================================
-# TRANSACTION MAPPINGS (EXTERNALIZED)
-# ==========================================================
 txn:
   mappings:
 
