@@ -1,17 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/XEPDB1
+    username: system
+    password: SYSTEM
+    driver-class-name: oracle.jdbc.OracleDriver
 
+# ==========================================================
+# TRANSACTION MAPPINGS (DB-ALIGNED & SAFE)
+# ==========================================================
 txn:
   mappings:
 
     # ================= SEND_TRANSACTIONS =================
     transaction:
+
       TRAN_ID:
         source: json
         path: $.transaction.tranId
-        required: true
-
-      TRAN_TYPE:
-        source: constant
-        value: PAYMENT
         required: true
 
       TRAN_AMT:
@@ -24,7 +29,17 @@ txn:
         path: $.transaction.currency
         required: true
 
+      TRAN_TYPE:
+        source: constant
+        value: PAYMENT
+        required: true
+
       CUR_STAT:
+        source: constant
+        value: NEW
+        required: true
+
+      ORIG_STAT:
         source: constant
         value: NEW
         required: true
@@ -32,6 +47,7 @@ txn:
       TRAN_CRTE_DT:
         source: system
         format: yyyy-MM-dd HH:mm:ss
+        required: true
 
       CRTE_TS:
         source: system
@@ -41,12 +57,19 @@ txn:
         source: constant
         value: SYSTEM
 
+
     # ================= SEND_TRAN_DTL =================
     transactionDetails:
+
+      TRAN_ID:
+        source: json
+        path: $.transaction.tranId
+        required: true
+
       PAYMT_REF:
         source: json
         path: $.details.paymentRef
-        required: true
+        required: false
 
       MERCH_CAT_CD:
         source: json
@@ -66,6 +89,16 @@ txn:
       TRAN_CRTE_DT:
         source: system
         format: yyyy-MM-dd HH:mm:ss
+        required: true
+
+      CRTE_TS:
+        source: system
+        format: yyyy-MM-dd HH:mm:ss
+
+      CRTE_USER_NAM:
+        source: constant
+        value: SYSTEM
+
 
     # ================= SEND_TRAN_ADDR_DTL =================
     addresses:
@@ -73,6 +106,11 @@ txn:
       sender:
         ID:
           source: generated
+
+        TRAN_ID:
+          source: json
+          path: $.transaction.tranId
+          required: true
 
         ADDR_TYPE:
           source: constant
@@ -106,9 +144,19 @@ txn:
           source: system
           format: yyyy-MM-dd HH:mm:ss
 
+        CRTE_USER_NAM:
+          source: constant
+          value: SYSTEM
+
+
       recipient:
         ID:
           source: generated
+
+        TRAN_ID:
+          source: json
+          path: $.transaction.tranId
+          required: true
 
         ADDR_TYPE:
           source: constant
@@ -142,8 +190,19 @@ txn:
           source: system
           format: yyyy-MM-dd HH:mm:ss
 
+        CRTE_USER_NAM:
+          source: constant
+          value: SYSTEM
+
+
     # ================= SEND_RECIP_DTL =================
     recipient:
+
+      TRAN_ID:
+        source: json
+        path: $.transaction.tranId
+        required: true
+
       SEND_FIRST_NAM:
         source: json
         path: $.sender.firstName
@@ -158,8 +217,6 @@ txn:
         source: json
         path: $.sender.email
         required: true
-        validation:
-          pattern: "^[A-Za-z0-9+_.-]+@(.+)$"
 
       SEND_PHN:
         source: json
@@ -169,7 +226,7 @@ txn:
       SEND_CARD_EXPIR_DT:
         source: json
         path: $.sender.cardExpiry
-        maxLength: 10   # <-- avoids ORA-12899
+        maxLength: 10
 
       RECIP_FIRST_NAM:
         source: json
@@ -194,3 +251,12 @@ txn:
       TRAN_CRTE_DT:
         source: system
         format: yyyy-MM-dd HH:mm:ss
+        required: true
+
+      CRTE_TS:
+        source: system
+        format: yyyy-MM-dd HH:mm:ss
+
+      CRTE_USER_NAM:
+        source: constant
+        value: SYSTEM
