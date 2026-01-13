@@ -6,58 +6,66 @@ txn:
           source: constant
           value: PAYMENT
           required: true
-        AMOUNT:
+
+        TRAN_AMT:
           source: json
           path: $.amount
           required: true
+
         CURRENCY:
           source: json
           path: $.currency
           required: true
+
         SOURCE_SYSTEM:
           source: json
           path: $.sourceSystem
           required: true
+
         TRANSFER_ACCEPTOR_ID:
           source: json
           path: $.transferAcceptorId
           required: false
+
         TRANSFER_ACCEPTOR_NAME:
           source: json
           path: $.transferAcceptorName
           required: false
+
         ORIGINAL_INST_ID:
           source: json
           path: $.originalInstId
           required: false
-          
+
       transactionDetails:
         - column: CUSTOMER_ID
           source: json
           path: $.customerId
           required: true
-          
+
       addresses:
         definitions:
           - jsonPath: $.billingAddress
             addressType: BILLING
           - jsonPath: $.shippingAddress
             addressType: SHIPPING
-            
+
       recipient:
         RECIP_NAME:
           source: json
           path: $.recipient.name
           required: true
+
         RECIP_FIRST_NAM:
           source: json
           path: $.recipient.firstName
           required: false
+
         RECIP_LST_NAM:
           source: json
           path: $.recipient.lastName
           required: false
-          
+
       status:
         initial:
           current_status: ACCEPTED
