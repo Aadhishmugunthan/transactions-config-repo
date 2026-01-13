@@ -1,262 +1,65 @@
-spring:
-  datasource:
-    url: jdbc:oracle:thin:@//localhost:1521/XEPDB1
-    username: system
-    password: SYSTEM
-    driver-class-name: oracle.jdbc.OracleDriver
-
-# ==========================================================
-# TRANSACTION MAPPINGS (DB-ALIGNED & SAFE)
-# ==========================================================
 txn:
   mappings:
-
-    # ================= SEND_TRANSACTIONS =================
-    transaction:
-
-      TRAN_ID:
-        source: json
-        path: $.transaction.tranId
-        required: true
-
-      TRAN_AMT:
-        source: json
-        path: $.transaction.amount
-        required: true
-
-      TRAN_CURR:
-        source: json
-        path: $.transaction.currency
-        required: true
-
-      TRAN_TYPE:
-        source: constant
-        value: PAYMENT
-        required: true
-
-      CUR_STAT:
-        source: constant
-        value: NEW
-        required: true
-
-      ORIG_STAT:
-        source: constant
-        value: NEW
-        required: true
-
-      TRAN_CRTE_DT:
-        source: system
-        format: yyyy-MM-dd HH:mm:ss
-        required: true
-
-      CRTE_TS:
-        source: system
-        format: yyyy-MM-dd HH:mm:ss
-
-      CRTE_USER_NAM:
-        source: constant
-        value: SYSTEM
-
-
-    # ================= SEND_TRAN_DTL =================
-    transactionDetails:
-
-      TRAN_ID:
-        source: json
-        path: $.transaction.tranId
-        required: true
-
-      PAYMT_REF:
-        source: json
-        path: $.details.paymentRef
-        required: false
-
-      MERCH_CAT_CD:
-        source: json
-        path: $.details.merchantCategory
-        required: false
-
-      FUND_SRC:
-        source: json
-        path: $.details.fundSource
-        required: false
-
-      TRAN_SETL_AMT:
-        source: json
-        path: $.details.settlementAmount
-        required: true
-
-      TRAN_CRTE_DT:
-        source: system
-        format: yyyy-MM-dd HH:mm:ss
-        required: true
-
-      CRTE_TS:
-        source: system
-        format: yyyy-MM-dd HH:mm:ss
-
-      CRTE_USER_NAM:
-        source: constant
-        value: SYSTEM
-
-
-    # ================= SEND_TRAN_ADDR_DTL =================
-    addresses:
-
-      sender:
-        ID:
-          source: generated
-
-        TRAN_ID:
-          source: json
-          path: $.transaction.tranId
+    PAYMENT:
+      transaction:
+        TXN_TYPE:
+          source: constant
+          value: PAYMENT
           required: true
-
-        ADDR_TYPE:
-          source: constant
-          value: SENDER
-
-        ST_LINE1:
+        AMOUNT:
           source: json
-          path: $.sender.address.line1
-
-        ST_LINE2:
+          path: $.amount
+          required: true
+        CURRENCY:
           source: json
-          path: $.sender.address.line2
-
-        CITY:
+          path: $.currency
+          required: true
+        SOURCE_SYSTEM:
           source: json
-          path: $.sender.address.city
-
-        ST:
+          path: $.sourceSystem
+          required: true
+        TRANSFER_ACCEPTOR_ID:
           source: json
-          path: $.sender.address.state
-
-        CNTRY_NAM:
+          path: $.transferAcceptorId
+          required: false
+        TRANSFER_ACCEPTOR_NAME:
           source: json
-          path: $.sender.address.country
-
-        POST_CD:
+          path: $.transferAcceptorName
+          required: false
+        ORIGINAL_INST_ID:
           source: json
-          path: $.sender.address.postalCode
-
-        CRTE_TS:
-          source: system
-          format: yyyy-MM-dd HH:mm:ss
-
-        CRTE_USER_NAM:
-          source: constant
-          value: SYSTEM
-
-
+          path: $.originalInstId
+          required: false
+          
+      transactionDetails:
+        - column: CUSTOMER_ID
+          source: json
+          path: $.customerId
+          required: true
+          
+      addresses:
+        definitions:
+          - jsonPath: $.billingAddress
+            addressType: BILLING
+          - jsonPath: $.shippingAddress
+            addressType: SHIPPING
+            
       recipient:
-        ID:
-          source: generated
-
-        TRAN_ID:
+        RECIP_NAME:
           source: json
-          path: $.transaction.tranId
+          path: $.recipient.name
           required: true
-
-        ADDR_TYPE:
-          source: constant
-          value: RECIPIENT
-
-        ST_LINE1:
+        RECIP_FIRST_NAM:
           source: json
-          path: $.recipient.address.line1
-
-        ST_LINE2:
+          path: $.recipient.firstName
+          required: false
+        RECIP_LST_NAM:
           source: json
-          path: $.recipient.address.line2
-
-        CITY:
-          source: json
-          path: $.recipient.address.city
-
-        ST:
-          source: json
-          path: $.recipient.address.state
-
-        CNTRY_NAM:
-          source: json
-          path: $.recipient.address.country
-
-        POST_CD:
-          source: json
-          path: $.recipient.address.postalCode
-
-        CRTE_TS:
-          source: system
-          format: yyyy-MM-dd HH:mm:ss
-
-        CRTE_USER_NAM:
-          source: constant
-          value: SYSTEM
-
-
-    # ================= SEND_RECIP_DTL =================
-    recipient:
-
-      TRAN_ID:
-        source: json
-        path: $.transaction.tranId
-        required: true
-
-      SEND_FIRST_NAM:
-        source: json
-        path: $.sender.firstName
-        required: true
-
-      SEND_LST_NAM:
-        source: json
-        path: $.sender.lastName
-        required: true
-
-      SEND_EMAIL:
-        source: json
-        path: $.sender.email
-        required: true
-
-      SEND_PHN:
-        source: json
-        path: $.sender.phone
-        required: false
-
-      SEND_CARD_EXPIR_DT:
-        source: json
-        path: $.sender.cardExpiry
-        maxLength: 10
-
-      RECIP_FIRST_NAM:
-        source: json
-        path: $.recipient.firstName
-        required: true
-
-      RECIP_LST_NAM:
-        source: json
-        path: $.recipient.lastName
-        required: true
-
-      RECIP_EMAIL:
-        source: json
-        path: $.recipient.email
-        required: true
-
-      RECIP_PHN:
-        source: json
-        path: $.recipient.phone
-        required: false
-
-      TRAN_CRTE_DT:
-        source: system
-        format: yyyy-MM-dd HH:mm:ss
-        required: true
-
-      CRTE_TS:
-        source: system
-        format: yyyy-MM-dd HH:mm:ss
-
-      CRTE_USER_NAM:
-        source: constant
-        value: SYSTEM
+          path: $.recipient.lastName
+          required: false
+          
+      status:
+        initial:
+          current_status: ACCEPTED
+          original_status: ACCEPTED
+          remarks: Created in system
