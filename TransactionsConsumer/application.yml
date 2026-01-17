@@ -1,0 +1,129 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/XEPDB1
+    username: system
+    password: SYSTEM
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+# ===============================
+# GENERIC DB SQL CONFIG
+# ===============================
+db:
+  sql:
+    insert:
+      transaction: |
+        INSERT INTO SYSTEM.SEND_TRANSACTIONS (
+          ${transaction.columns}
+        ) VALUES (
+          ${transaction.params}
+        )
+
+      transactionDetail: |
+        INSERT INTO SYSTEM.SEND_TRAN_DTL (
+          ${transactionDetail.columns}
+        ) VALUES (
+          ${transactionDetail.params}
+        )
+
+      transactionAddress: |
+        INSERT INTO SYSTEM.SEND_TRAN_ADDR_DTL (
+          ${transactionAddress.columns}
+        ) VALUES (
+          ${transactionAddress.params}
+        )
+
+      recipient: |
+        INSERT INTO SYSTEM.SEND_RECIP_DTL (
+          ${recipient.columns}
+        ) VALUES (
+          ${recipient.params}
+        )
+
+# ===============================
+# COLUMN + PARAM MAPPINGS
+# ===============================
+transaction:
+  columns: >
+    TRAN_ID,
+    TRAN_TYPE,
+    TRAN_AMT,
+    TRAN_CURR,
+    CUR_STAT,
+    ORIG_STAT,
+    CRTE_TS
+
+  params: >
+    :tranId,
+    :tranType,
+    :tranAmt,
+    :tranCurr,
+    :curStat,
+    :origStat,
+    :crteTs
+
+
+transactionDetail:
+  columns: >
+    TRAN_ID,
+    PAYMT_REF,
+    UNQ_TRAN_REF,
+    ACQ_ICA,
+    REMARKS
+
+  params: >
+    :tranId,
+    :paymtRef,
+    :unqTranRef,
+    :acqIca,
+    :remarks
+
+
+transactionAddress:
+  columns: >
+    ID,
+    TRAN_ID,
+    ADDR_TYPE,
+    ST_LINE1,
+    CITY,
+    ST,
+    CNTRY_NAM,
+    POST_CD,
+    CRTE_TS
+
+  params: >
+    :addressId,
+    :tranId,
+    :addrType,
+    :stLine1,
+    :city,
+    :st,
+    :cntryNam,
+    :postCd,
+    :crteTs
+
+
+recipient:
+  columns: >
+    TRAN_ID,
+    SEND_FIRST_NAM,
+    SEND_LST_NAM,
+    SEND_PHN,
+    RECIP_FIRST_NAM,
+    RECIP_LST_NAM,
+    RECIP_PHN,
+    CRTE_TS
+
+  params: >
+    :tranId,
+    :sendFirstNam,
+    :sendLstNam,
+    :sendPhn,
+    :recipFirstNam,
+    :recipLstNam,
+    :recipPhn,
+    :crteTs
