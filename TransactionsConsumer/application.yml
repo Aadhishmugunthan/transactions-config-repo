@@ -50,21 +50,36 @@ db:
 transaction:
   columns: >
     TRAN_ID,
+    TRAN_INIT_ID,
+    ORIG_INST_ID,
+    ORIG_INST_NAM,
     TRAN_TYPE,
     TRAN_AMT,
     TRAN_CURR,
     CUR_STAT,
     ORIG_STAT,
-    CRTE_TS
+    USE_CASE,
+    MSG_TYPE,
+    CUST_REF_NUM,
+    CRTE_TS,
+    UPDT_TS
 
   params: >
     :tranId,
+    :tranInitId,
+    :origInstId,
+    :origInstNam,
     :tranType,
     :tranAmt,
     :tranCurr,
     :curStat,
     :origStat,
-    :crteTs
+    :useCase,
+    :msgType,
+    :custRefNum,
+    :crteTs,
+    :updtTs
+
 
 
 transactionDetail:
@@ -73,14 +88,25 @@ transactionDetail:
     PAYMT_REF,
     UNQ_TRAN_REF,
     ACQ_ICA,
-    REMARKS
+    FUND_SRC,
+    MERCH_CAT_CD,
+    TRAN_PRPS,
+    TRAN_SETL_AMT,
+    REMARKS,
+    CRTE_TS
 
   params: >
     :tranId,
     :paymtRef,
     :unqTranRef,
     :acqIca,
-    :remarks
+    :fundSrc,
+    :merchCatCd,
+    :tranPrps,
+    :tranSetlAmt,
+    :remarks,
+    :crteTs
+
 
 
 transactionAddress:
@@ -89,41 +115,58 @@ transactionAddress:
     TRAN_ID,
     ADDR_TYPE,
     ST_LINE1,
+    ST_LINE2,
     CITY,
     ST,
     CNTRY_NAM,
     POST_CD,
-    CRTE_TS
+    ADDR_STAT,
+    POST_CD_STAT,
+    CRTE_TS,
+    UPDT_TS
 
   params: >
     :addressId,
     :tranId,
     :addrType,
     :stLine1,
+    :stLine2,
     :city,
     :st,
     :cntryNam,
     :postCd,
-    :crteTs
+    :addrStat,
+    :postCdStat,
+    :crteTs,
+    :updtTs
+
 
 
 recipient:
   columns: >
     TRAN_ID,
     SEND_FIRST_NAM,
+    SEND_MID_NAM,
     SEND_LST_NAM,
     SEND_PHN,
+    SEND_EMAIL,
     RECIP_FIRST_NAM,
+    RECIP_MID_NAM,
     RECIP_LST_NAM,
     RECIP_PHN,
+    RECIP_EMAIL,
     CRTE_TS
 
   params: >
     :tranId,
     :sendFirstNam,
+    :sendMidNam,
     :sendLstNam,
     :sendPhn,
+    :sendEmail,
     :recipFirstNam,
+    :recipMidNam,
     :recipLstNam,
     :recipPhn,
+    :recipEmail,
     :crteTs
